@@ -34,16 +34,20 @@ b = int (a);    // functional notation
 
 4.	**If ```a = 5, b = 6, c = 8, d = 2``` what will be the value of ```e``` after this operation?**
 ```cpp
-e = a > b ? c : d;
+e = a > b ? c : d; // 2
 ```
+
 
 5.	**Consider precedence bracket the operations below in the order the are executed:**
 ```cpp
-a + b * c – d
-a > b ? a : c > d ? e : f
+a + b * c – d // *+-
+a > b ? a : c > d ? e : f // >?: >?:
 ```
 
 6.	**What are pre-processor directives?**
+
+Preprocessor directives are lines included in a program that being with the character #, which make them different from a typical source code text. They are invoked by the compiler to process some programs before compilation. Preprocessor directives change the text of the source code and the result is a new source code without these directives.  
+[Reference](https://www.techopedia.com/definition/24295/preprocessor-directive)
 
 7.	**Describe the purpose of the element in a simple C++ program:**
 ```cpp
@@ -56,28 +60,40 @@ int main()
     return 0;
 }
 ```
+\# - Pre-processor syntax  
+\#include\<iostream\> - Header Inclusion  
+Namespaces contain a set of functions in one set to avoid variable clashes. Namespace is a method for differentiating similar entities coming from different developmental efforts
 
 8.	**What is the difference between ‘global’ and ‘automatic’ variables?**
 
+A **global variable** is a variable that is defined outside all functions and available to all functions.  
+For **automatic variables**, specifies that the type of the variable that is being declared will be automatically deduced from its initializer.  
+[Reference](http://faculty.cs.niu.edu/~freedman/241/241notes/241var2.htm)
+
 9.	**What is operator precedence?**
+
+[Reference1](https://msdn.microsoft.com/en-us/library/126fe14k.aspx)  
+[Reference2](http://en.cppreference.com/w/cpp/language/operator_precedence)
 
 10.	**Consider the two operations below. What will be the value of i, j and k after each step?**
  ```cpp
  int i{ 5 }, j{ 5 }, k{};
- k++;
- k = ++i + j;
- k = i++ + j;
- k += --j;
- k /= ++j
+ k++; // invalid
+ k = ++i + j; // 11
+ k = i++ + j; // 11
+ k += --j; // 15
+ k /= ++j // 2
  ```
  
 11.	**Explain the conditional operator and how it works on the code below:**
 ```cpp
  int i{ 5 }, j{ 10 }, k{};
- k = i > j ? i : j;
+ k = i > j ? i : j; // 10
  ```
  
 12.	**What are ‘nested loops’? When and how are they used?**
+
+A *nested loop* is a loop within a loop, an inner loop within the body of an outer one. How this works is that the first pass of the outer loop triggers the inner loop, which executes to completion. Then the second pass of the outer loop triggers the inner loop again. This repeats until the outer loop finishes. Of course, a *break* within either the inner or outer loop would interrupt this process.  
 
 13.	**Explain the use and differences between ```if/elseif/else``` statements and ```switch/case``` statements.**
 14.	**What is ```nullptr``` ?**
