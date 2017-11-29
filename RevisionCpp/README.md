@@ -13,9 +13,24 @@ Ordinary/Natural Language
 Little or no abstraction from a computer's ISA
 Machine Language
 
-2.	**What are the roles of the pre-processor, compiler and linker?**
+2.	**What are the roles of the pre-processor, compiler and linker?**  
+
+First, the C **preprocessor** cpp expands all those macros definitions and include statements (and anything else that starts with a #) and passes the result to the actual compiler.  
+The **compiler** effectively translates preprocessed C code into assembly code, performing various optimizations along the way as well as register allocation.  
+The **linker** produces a binary executable that can be run from the command interface.  
+[Reference](https://courses.cs.washington.edu/courses/cse378/97au/help/compilation.html)
 
 3.	**What is the difference between implicit and explicit casting of variables?**
+
+Converting an expression of a given type into another type is known as *type-casting*.  
+Implicit conversions do not require any operator. They are automatically performed when a value is copied to a compatible type.  
+C++ is a strong-typed language. Many conversions, specially those that imply a different interpretation of the value, require an explicit conversion.  
+```cpp
+short a=2000;
+int b;
+b = (int) a;    // c-like cast notation
+b = int (a);    // functional notation 
+```
 
 4.	**If ```a = 5, b = 6, c = 8, d = 2``` what will be the value of ```e``` after this operation?**
 ```cpp
