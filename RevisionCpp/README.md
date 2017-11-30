@@ -228,36 +228,288 @@ int main () {
 
 20.	**What are user defined data types?**
 
+C++ allows us to define our own types based on other existing data types. In order to do that we shall use keyword ```typedef```, whose form is:
+```cpp
+typedef   existing_type   new_type_name ;
+```
+where ```existing_type``` is a C++ fundamental or any other defined type and ```new_type_name``` is the name that the new type we are going to define will receive. For example:
+```cpp
+typedef char C;
+typedef unsigned int WORD;
+typedef char * string_t;
+typedef char field [50];
+```
+In this case we have defined four new data types: ```C```, ```WORD```, ```string_t``` and ```field``` as ```char```, ```unsigned int```, ```char*``` and ```char[50]``` respectively, that we could perfectly use later as valid types:
+```cpp
+C achar, anotherchar, *ptchar1;
+WORD myword;
+string_t ptchar2;
+field name;
+```
+```typedef``` can be useful to define a type that is repeatedly used within a program and it is possible that we will need to change it in a later version, or if a type you want to use has too long a name and you want it to be shorter.
 
 21.	**What are enumerators?**
 
+An enumeration is a user-defined type that consists of a set of named integral constants that are known as enumerators. Each enumerator becomes a named constant of the enumeration's type (that is, name), visible in the enclosing scope, and can be used whenever constants are required.
+```cpp
+enum Foo { a, b, c = 10, d, e = 1, f, g = f + c };
+//a = 0, b = 1, c = 10, d = 11, e = 1, f = 2, g = 12
+
+enum color { red, yellow, green = 20, blue };
+color col = red;
+int n = blue; // n == 21
+
+enum { a, b, c = 0, d = a + 2 }; // defines a = 0, b = 1, c = 0, d = 2
+```
 
 22.	**What are the differences between classes and structures?**
+
+||Class|Structure|
+|:--------------------------|:--------------|:----------------|
+|Definition|A class in C++ can be defined as a collection of related variables and functions encapsulated in a single structure.|A structure can be referred to as a user defined data type possessing its own operations.|
+|Keyword for declaration|Class|Struct|
+|Default access specifier|Private|Public|
+|Purpose|Data abstraction and further inheritance|Generally, grouping of data|
+|Type|Reference|Value|
+|Usage|Generally used for large amounts of data.|Generally used for smaller amounts of data.|
 
 
 23.	**Consider an object oriented program for a temperature controller. What objects could use to do this? What methods and attributes would these objects have?**
 
+```cpp
+```
 
 24.	**What are class constructors? How and why are they used?**
+
+* Constructors
+
+A class **constructor** is a special member function of a class that is executed whenever we create new objects of that class. A constructor will have exact same name as the class and it does not have any return type at all, not even void. Constructors can be very useful for setting initial values for certain member variables. A default constructor does not have any parameter, but if you need, a constructor can have parameters. This helps you to assign initial value to an object at the time of its creation.  
+
+* Destructors
+
+A **destructor** is a special member function of a class that is executed whenever an object of it's class goes out of scope or whenever the delete expression is applied to a pointer to the object of that class. A destructor will have exact same name as the class prefixed with a tilde (~) and it can neither return a value nor can it take any parameters. Destructor can be very useful for releasing resources before coming out of the program like closing files, releasing memories etc.  
+
 25.	**What access keywords are used in functions and what do they do?**
+
+Data hiding is one of the important features of Object Oriented Programming which allows preventing the functions of a program to access directly the internal representation of a class type. The access restriction to the class members is specified by the labeled public, private, and protected sections within the class body. The keywords **public**, **private**, and **protected** are called access specifiers.  
+A class can have multiple public, protected, or private labeled sections. Each section remains in effect until either another section label or the closing right brace of the class body is seen. The default access for members and classes is private.  
+
+|Access|public|protected|private|
+|------|:----:|:------:|:----:|
+|Same class|YES|YES|YES|
+|Derived class|YES|YES|NO|
+|Outside class|YES|NO|NO|
+
 26.	**What are Class destructors and what do they do?**
+
+* Constructors
+
+A class **constructor** is a special member function of a class that is executed whenever we create new objects of that class. A constructor will have exact same name as the class and it does not have any return type at all, not even void. Constructors can be very useful for setting initial values for certain member variables. A default constructor does not have any parameter, but if you need, a constructor can have parameters. This helps you to assign initial value to an object at the time of its creation.  
+
+* Destructors
+
+A **destructor** is a special member function of a class that is executed whenever an object of it's class goes out of scope or whenever the delete expression is applied to a pointer to the object of that class. A destructor will have exact same name as the class prefixed with a tilde (~) and it can neither return a value nor can it take any parameters. Destructor can be very useful for releasing resources before coming out of the program like closing files, releasing memories etc.  
+
 27.	**How can you encapsulate dynamic memory allocation in an object?**
+
+As we know that Constructor is a member function of a class which is called whenever a new object is created of that class. It is used to initialize that object. Destructor is also a class member function which is called whenever the object goes out of scope.  
+Destructor is used to release the memory assigned to the object. It is called in these conditions.  
+* When a local object goes out of scope
+* For a global object, operator is applied to a pointer to the object of the class
+We again use pointers while dynamically allocating memory to objects. Let's see an example of array of objects.
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+class A
+{
+	 public:
+       	A() { 
+    	  cout << "Constructor" << endl; 
+      	}
+       	~A() { 
+    	   cout << "Destructor" << endl; 
+        }
+};
+
+int main()
+{
+	A* a = new A[4];
+	delete [] a; // Delete array
+	return 0;
+}
+```
+
 28.	**What is operator overloading, why and how is it used?**
+
+You can redefine or overload the function of most built-in operators in C++. These operators can be overloaded globally or on a class-by-class basis. Overloaded operators are implemented as functions and can be member functions or global functions.  
+An overloaded operator is called an operator function. You declare an operator function with the keyword operator preceding the operator. Overloaded operators are distinct from overloaded functions, but like overloaded functions, they are distinguished by the number and types of operands used with the operator.   
+```cpp
+#include <iostream>
+
+class HAHA {
+private:
+	int num;
+
+public:
+	HAHA() {
+		num = -1;
+	}
+
+	void operator ++() {
+		num = num + 10;
+	}
+
+	void display() {
+		std::cout << num << std::endl;
+	}
+
+};
+
+int main() {
+	HAHA test;
+	++test;
+	test.display(); // 9
+}
+```
+
 29.	**What is class inheritance, what is advantages does it have?**
+
+The capability of a class to derive properties and characteristics from another class is called **Inheritance**. Inheritance is one of the most important feature of Object Oriented Programming.  
+**Sub Class**: The class that inherits properties from another class is called Sub class or Derived Class.  
+**Super Class**:The class whose properties are inherited by sub class is called Base Class or Super class.  
+
+
 30.	**How to class access keywords relate to inheritance?**
+
+* Public mode
+
+If we derive a sub class from a public base class. Then the public member of the base class will become public in the derived class and protected members of the base class will become protected in derived class. Private members of the base class will never get inherited in sub class.  
+* Protected mode 
+
+If we derive a sub class from a Protected base class. Then both public member and protected members of the base class will become protected in derived class. Private members of the base class will never get inherited in sub class.  
+* Private mode
+
+If we derive a sub class from a Private base class. Then both public member and protected members of the base class will become Private in derived class. Private members of the base class will never get inherited in sub class.  
+
+||Derived class|Derived class|Derived class|
+|--|--|--|--|
+|Base class|public mode|private mode|protected mode|
+|private|Not inherited|Not inherited|Not inherited|
+|protected|protected|private|protected|
+|public|public|private|protected|
+
 31.	**What are virtual functions in classes?**
+
+A virtual function is a member function that you expect to be redefined in derived classes. When you refer to a derived class object using a pointer or a reference to the base class, you can call a virtual function for that object and execute the derived class's version of the function.  
+Virtual functions ensure that the correct function is called for an object, regardless of the expression used to make the function call.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Polygon {
+  protected:
+    int width, height;
+  public:
+    void set_values (int a, int b)
+      { width=a; height=b; }
+    virtual int area ()
+      { return 0; }
+};
+
+class Rectangle: public Polygon {
+  public:
+    int area ()
+      { return width * height; }
+};
+
+class Triangle: public Polygon {
+  public:
+    int area ()
+      { return (width * height / 2); }
+};
+
+int main () {
+  Rectangle rect;
+  Triangle trgl;
+  Polygon poly;
+  Polygon * ppoly1 = &rect;
+  Polygon * ppoly2 = &trgl;
+  Polygon * ppoly3 = &poly;
+  ppoly1->set_values (4,5);
+  ppoly2->set_values (4,5);
+  ppoly3->set_values (4,5);
+  cout << ppoly1->area() << '\n'; // 20
+  cout << ppoly2->area() << '\n'; // 10
+  cout << ppoly3->area() << '\n'; // 0
+  return 0;
+}
+```
+
 32.	**What are STL containers? What are the advantages of using containers?**
+
+* Sequence Containers
+    * [array](http://www.cplusplus.com/reference/array/array/) Array class
+    * [vector](http://www.cplusplus.com/reference/vector/vector/) Vector
+    * [deque](http://www.cplusplus.com/reference/deque/deque/) Double ended queue
+    * [list](http://www.cplusplus.com/reference/list/list/) List
+    * [forward_list](http://www.cplusplus.com/reference/forward_list/forward_list/) Forward list
+
+* Associative Containers
+    * [set](http://www.cplusplus.com/reference/set/set/) Set
+    * [map](http://www.cplusplus.com/reference/map/map/) Map
+    * [unordered_set](http://www.cplusplus.com/reference/unordered_set/unordered_set/) Unordered Set
+    * [unordered_map](http://www.cplusplus.com/reference/unordered_map/unordered_map/) Unordered Map
+
+* Container Adaptors
+    * [stack](http://www.cplusplus.com/reference/stack/stack/) LIFO stack
+    * [queue](http://www.cplusplus.com/reference/queue/queue/) FIFO queue
+    * [priority_queue](http://www.cplusplus.com/reference/queue/priority_queue/) Priority queue
+
 33.	**What are STL Iterators? How are they used?**
+
+An iterator is any object that, pointing to some element in a range of elements (such as an array or a container), has the ability to iterate through the elements of that range using a set of operators (with at least the increment (++) and dereference (\*) operators).  
+The most obvious form of iterator is a pointer: A pointer can point to elements in an array, and can iterate through them using the increment operator (++). But other kinds of iterators are possible. For example, each container type (such as a list) has a specific iterator type designed to iterate through its elements.  
+Iterators are classified into five categories depending on the functionality they implement. [Reference](http://www.cplusplus.com/reference/iterator/)  
+* Output
+* Input 
+* Forward
+* Bidirectional
+* Random Access
+
 34.	**What are Smart pointers? How do they differ from ‘raw’ pointers?**
+
+
 35.	**What is the difference between an unique pointer and a shared pointer?**
+
+
 36.	**What is the difference between the ‘size’ and ‘capacity’ of a vector?**
+
+
 37.	**What does the reserve method do in a vector?  When is it advantageous to use it?**
+
+
 38.	**What are containers?**
+
+
 39.	**What are the differences between sequence containers and associative containers?**
+
+
 40.	**What are the main features of (and differences) of vector, deque and list containers.**
+
+
 41.	**What does double linking in a list mean?**
+
+
 42.	**What are map objects?**
+
+
 43.	**What are iterators and how are they used?**
+
+
 44.	**Using the ```std::multiplies<>()``` functor and the ```std::transform<>()```  algorithm multiply the element 0 to 20 of ```numbersA``` with element 10 to 30 of ```numbersB``` and save the result on element 0:20 of ```numbersC```.**
 ```cpp
 std::vector < int >  numbersA(100);
@@ -267,13 +519,5 @@ std::vector < int >  numbersC(100);
 Output Iterator transform(InputIterator begin1, InputIteraotr end1, 
 InputIterator begin2, OutputIterator result, biary function f);
 ```
-45.	**What is event based programing?**
 
-46.	**What are the differences between windows applications and console applications?**
-
-47.	**What are windows messages? How are they handled?**
-
-48.	**What is event based programing?**
-
-49.	**What are the differences between windows applications and console applications?**
 
