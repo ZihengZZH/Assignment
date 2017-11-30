@@ -277,6 +277,19 @@ enum { a, b, c = 0, d = a + 2 }; // defines a = 0, b = 1, c = 0, d = 2
 23.	**Consider an object oriented program for a temperature controller. What objects could use to do this? What methods and attributes would these objects have?**
 
 ```cpp
+class controller {
+
+private:
+	int threshold;
+	int temperature;
+	bool open;
+
+public:
+	int getTemperature();
+	void doesReach();
+	void heat();
+
+};
 ```
 
 24.	**What are class constructors? How and why are they used?**
@@ -482,42 +495,193 @@ Iterators are classified into five categories depending on the functionality the
 
 34.	**What are Smart pointers? How do they differ from ‘raw’ pointers?**
 
+In modern C++ programming, the Standard Library includes smart pointers, which are used to help ensure that programs are free of memory and resource leaks and are exception-safe.  
+Smart pointers are defined in the std namespace in the <memory> header file. They are crucial to the RAII or Resource Acquisition Is Initialialization programming idiom. The main goal of this idiom is to ensure that resource acquisition occurs at the same time that the object is initialized, so that all resources for the object are created and made ready in one line of code. In practical terms, the main principle of RAII is to give ownership of any heap-allocated resource—for example, dynamically-allocated memory or system object handles—to a stack-allocated object whose destructor contains the code to delete or free the resource and also any associated cleanup code.  
+In most cases, when you initialize a raw pointer or resource handle to point to an actual resource, pass the pointer to a smart pointer immediately. In modern C++, raw pointers are only used in small code blocks of limited scope, loops, or helper functions where performance is critical and there is no chance of confusion about ownership.  
+
+```cpp
+void UseRawPointer()
+{
+    // Using a raw pointer -- not recommended.
+    Song* pSong = new Song(L"Nothing on You", L"Bruno Mars"); 
+
+    // Use pSong...
+
+    // Don't forget to delete!
+    delete pSong;   
+}
+
+void UseSmartPointer()
+{
+    // Declare a smart pointer on stack and pass it the raw pointer.
+    unique_ptr<Song> song2(new Song(L"Nothing on You", L"Bruno Mars"));
+
+    // Use song2...
+    wstring s = song2->duration_;
+    //...
+
+} // song2 is deleted automatically here.
+```
 
 35.	**What is the difference between an unique pointer and a shared pointer?**
 
+Both of these classes are smart pointers, which means that they automatically (in most cases) will deallocate the object that they point at when that object can no longer be referenced. The difference between the two is how many different pointers of each type can refer to a resource.  
+When using ```unique_ptr```, there can be at most one ```unique_ptr``` pointing at any one resource. When that ```unique_ptr``` is destroyed, the resource is automatically reclaimed. Because there can only be one ```unique_ptr``` to any resource, any attempt to make a copy of a ```unique_ptr``` will cause a compile-time error.  
+[Reference](https://mbevin.wordpress.com/2012/11/18/smart-pointers/)
 
 36.	**What is the difference between the ‘size’ and ‘capacity’ of a vector?**
 
+**Size** is not allowed to differ between multiple compilers. The size of a vector is the number of elements that it contains, which is directly controlled by how many elements you put into the vector.  
+**Capacity** is the amount of space that the vector is currently using. Under the hood, a vector just uses an array. The capacity of the vector is the size of that array. This is always equal to or larger than the size. The difference between them is the number of elements that you can add to the vector before the array under the hood needs to be reallocated.  
+You should almost never care about the capacity. It exists to let people with very specific performance and memory constraints do exactly what they want.
 
 37.	**What does the reserve method do in a vector?  When is it advantageous to use it?**
+```cpp
+void reserve( size_type new_cap );
+```
+Increase the capacity of the vector to a value that's greater or equal to ```new_cap```. If ```new_cap``` is greater than the current ```capacity()```, new storage is allocated, otherwise the method does nothing.  
+If ```new_cap``` is greater than ```capacity()```, all iterators, including the past-the-end iterator, and all references to the elements are invalidated. Otherwise, no iterators or references are invalidated.
+```cpp
+// vector::reserve
+#include <iostream>
+#include <vector>
 
+int main () {
+  std::vector<int>::size_type sz;
+
+  std::vector<int> foo;
+  sz = foo.capacity();
+  std::cout << "making foo grow:\n";
+  for (int i=0; i<100; ++i) {
+    foo.push_back(i);
+    if (sz!=foo.capacity()) {
+      sz = foo.capacity();
+      std::cout << "capacity changed: " << sz << '\n';
+    }
+  }
+
+  std::vector<int> bar;
+  sz = bar.capacity();
+  bar.reserve(100);   // this is the only difference with foo above
+  std::cout << "making bar grow:\n";
+  for (int i=0; i<100; ++i) {
+    bar.push_back(i);
+    if (sz!=bar.capacity()) {
+      sz = bar.capacity();
+      std::cout << "capacity changed: " << sz << '\n';
+    }
+  }
+  return 0;
+}
+// making foo grow:
+// capacity changed: 1
+// capacity changed: 2
+// capacity changed: 4
+// capacity changed: 8
+// capacity changed: 16
+// capacity changed: 32
+// capacity changed: 64
+// capacity changed: 128
+// making bar grow:
+// capacity changed: 100
+```
 
 38.	**What are containers?**
 
+A container is a holder object that stores a collection of other objects (its elements). They are implemented as class templates, which allows a great flexibility in the types supported as elements.  
+The container manages the storage space for its elements and provides member functions to access them, either directly or through iterators (reference objects with similar properties to pointers).  
+[Reference](http://www.cplusplus.com/reference/stl/)
 
 39.	**What are the differences between sequence containers and associative containers?**
 
+A **sequence** container is ordered. Each item has a unique index from 0-N where N is the number of elements. Example: std::vector.  
+An **associative** container has no inherent order. It represents a mapping from a key to a value. That is, instead of having an index, each item is retrieved using its key. Example: std::map.
 
 40.	**What are the main features of (and differences) of vector, deque and list containers.**
 
+Use [deque](http://www.cplusplus.com/reference/deque/deque/) if you need efficient insertion/removal at the beginning and end of the sequence and random access; use [list](http://www.cplusplus.com/reference/list/list/) if you need efficient insertion anywhere, at the sacrifice of random access. Iterators and references to [list](http://www.cplusplus.com/reference/list/list/) elements are very stable under almost any mutation of the container, while [deque](http://www.cplusplus.com/reference/deque/deque/) has very peculiar iterator and reference invalidation rules (so check them out carefully).  
+Also, [list](http://www.cplusplus.com/reference/list/list/) is a node-based container, while a [deque](http://www.cplusplus.com/reference/deque/deque/) uses chunks of contiguous memory, so memory locality may have performance effects that cannot be captured by asymptotic complexity estimates.  
+[deque](http://www.cplusplus.com/reference/deque/deque/) can serve as a replacement for [vector](http://www.cplusplus.com/reference/vector/vector/) almost everywhere and should probably have been considered the "default" container in C++ (on account of its more flexible memory requirements); the only reason to prefer [vector](http://www.cplusplus.com/reference/vector/vector/) is when you must have a guaranteed contiguous memory layout of your sequence.
 
 41.	**What does double linking in a list mean?**
 
+A doubly-linked list is a linked data structure that consists of a set of sequentially linked records called nodes. Each node contains two fields, called links, that are references to the previous and to the next node in the sequence of nodes.  
+```cpp
+struct node {
+	int data;
+	node *prev;
+	node *next;
+};
+```
 
 42.	**What are map objects?**
 
+Maps are associative containers that store elements formed by a combination of a ```key value``` and a ```mapped value```, following a specific order.  
+In a ```map```, the ```key value```s are generally used to sort and uniquely identify the elements, while the mapped values store the content associated to this ```key```. The types of key and mapped value may differ, and are grouped together in member type ```value_type```, which is a pair type combining both:
+```cpp
+typedef pair<const Key, T> value_type;
+```
+Internally, the elements in a ```map``` are always sorted by its ```key``` following a specific ```strict weak ordering``` criterion indicated by its internal comparison object (of type ```Compare```).  
+map containers are generally slower than unordered_map containers to access individual elements by their ```key```, but they allow the direct iteration on subsets based on their order.  
+The mapped values in a map can be accessed directly by their corresponding key using the ```bracket operator``` ((operator[]).  
+Maps are typically implemented as ```binary search``` trees.
 
 43.	**What are iterators and how are they used?**
 
+The concept of an iterator is fundamental to understanding the C++ Standard Template Library (STL) because iterators provide a means for accessing data stored in container classes such a vector, map, list, etc.  
+You can think of an iterator as pointing to an item that is part of a larger container of items. For instance, all containers support a function called begin, which will return an iterator pointing to the beginning of the container (the first element) and function, end, that returns an iterator corresponding to having reached the end of the container. In fact, you can access the element by "dereferencing" the iterator with a \*, just as you would dereference a pointer. 
 
 44.	**Using the ```std::multiplies<>()``` functor and the ```std::transform<>()```  algorithm multiply the element 0 to 20 of ```numbersA``` with element 10 to 30 of ```numbersB``` and save the result on element 0:20 of ```numbersC```.**
 ```cpp
-std::vector < int >  numbersA(100);
-std::vector < int >  numbersB(100);
-std::vector < int >  numbersC(100);
-// binary transform declaration
-Output Iterator transform(InputIterator begin1, InputIteraotr end1, 
-InputIterator begin2, OutputIterator result, biary function f);
+#include <iostream>
+#include <vector>
+#include <iterator>
+#include <algorithm>
+
+using namespace std;
+
+void display(vector<int> vec) {
+	cout << endl;
+	for (auto v : vec) {
+		cout << v << "\t";
+	}
+	cout << endl;
+}
+
+vector<int> init(int n) {
+	vector<int> result;
+	for (int i = 0; i < 100; i++) {
+		result.push_back(i+n);
+	}
+	return result;
+}
+
+
+int main() {
+
+	vector<int> numbersA = init(1);
+	vector<int> numbersB = init(1);
+	vector<int> numbersC(100);
+
+	/*template <class InputIterator, class OutputIterator, class binary>
+	OutputIterator transform(InputIterator begin1,
+		InputIterator end1, InputIterator begin2,
+		OutputIterator result, binary function f);*/
+
+	transform(numbersA.begin(), numbersA.begin()+20,
+		numbersB.begin()+9, numbersC.begin(),
+		multiplies<int>());
+
+	display(numbersA);
+	display(numbersB);
+	display(numbersC);
+
+	system("pause");
+	return 0;
+
+}
 ```
+
+
 
 
