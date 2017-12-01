@@ -79,7 +79,7 @@ For **automatic variables**, specifies that the type of the variable that is bei
 10.	**Consider the two operations below. What will be the value of i, j and k after each step?**
  ```cpp
  int i{ 5 }, j{ 5 }, k{};
- k++; // invalid
+ k++; // 1
  k = ++i + j; // 11
  k = i++ + j; // 11
  k += --j; // 15
@@ -111,8 +111,28 @@ A *nested loop* is a loop within a loop, an inner loop within the body of an out
 14.	**What is ```nullptr``` ?**
 
 The ```nullptr``` keyword represents a null pointer value. Use a ```null pointer``` value to indicate that an object handle, interior pointer, or native pointer type does not point to an object.  
-Use ```nullptr``` with either managed or native code. The compiler emits appropriate but different instructions for managed and native null pointer values. For information about using the ISO standard C++ version of this keyword, see [nullptr](https://docs.microsoft.com/zh-cn/cpp/cpp/nullptr).  
-[Reference](http://en.cppreference.com/w/cpp/language/nullptr)
+Use ```nullptr``` with either managed or native code. The compiler emits appropriate but different instructions for managed and native null pointer values. For information about using the ISO standard C++ version of this keyword, see [nullptr](https://docs.microsoft.com/zh-cn/cpp/cpp/nullptr). [Reference](http://en.cppreference.com/w/cpp/language/nullptr)
+```cpp
+#include <cstddef>
+#include <iostream>
+ 
+template<class F, class A>
+void Fwd(F f, A a) {
+    f(a);
+}
+ 
+void g(int* i) {
+    std::cout << "Function g called\n";
+}
+ 
+int main() {
+    g(NULL);           // Fine
+    g(0);              // Fine
+ 
+    Fwd(g, nullptr);   // Fine
+//  Fwd(g, NULL);  // ERROR: No function g(int)
+}
+```
 
 15.	**What is the difference between the ‘stack’ and the ‘heap’?**
 
